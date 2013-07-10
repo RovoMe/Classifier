@@ -1,9 +1,23 @@
 package at.rovo.classifier.naiveBayes;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import at.rovo.classifier.TrainingData;
 
 /**
  * <p>
@@ -51,6 +65,8 @@ import java.util.Map;
  */
 public class NBListTrainingData<F, C> extends NBTrainingData<F, C>
 {
+	/** The logger of this class **/
+	private static Logger logger = LogManager.getLogger(NBListTrainingData.class);
 	/** Unique identifier necessary for serialization **/
 	private static final long serialVersionUID = -2101815681608863601L;
 	/** Stores the categories trained **/
@@ -186,5 +202,89 @@ public class NBListTrainingData<F, C> extends NBTrainingData<F, C>
 	protected List<C> getCategories()
 	{
 		return this.categories;
+	}
+	
+	@Override
+	public void saveData(File directory, String name)
+	{
+		try 
+		{
+			FileOutputStream fos = new FileOutputStream(directory.getAbsoluteFile()+"\\"+name);
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			ObjectOutput object = null;
+			try 
+			{
+				object = new ObjectOutputStream(bos);
+				object.writeObject(this);
+			} 
+			catch (IOException e) 
+			{
+				logger.catching(e);
+			}
+			finally
+			{
+				if (object != null)
+					object.close();
+				if (bos != null)
+					bos.close();
+				if (fos != null)
+					fos.close();
+			}
+		} 
+		catch (IOException e)
+		{
+			logger.catching(e);
+		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean loadData(File serializedObject)
+	{
+		NBListTrainingData<F,C> data = null;
+		try
+		{
+			FileInputStream fis = new FileInputStream(serializedObject);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			ObjectInputStream ois = new ObjectInputStream(bis);
+			try
+			{
+				Object obj = ois.readObject();
+				if (obj instanceof TrainingData)
+				{
+					data = (NBListTrainingData<F, C>)obj;
+					logger.info("Found trained data for: {}", data);
+				}
+				else
+					logger.error("File is not a valid data object for this classifier!");
+			}
+			catch (IOException | ClassNotFoundException e) 
+			{
+				logger.catching(e);
+			}
+			finally
+			{
+				if (ois != null)
+					ois.close();
+				if (bis != null)
+					bis.close();
+				if (fis != null)
+					fis.close();
+			}
+		}
+		catch (IOException e) 
+		{
+			logger.catching(e);
+		}
+		
+		if (data != null)
+		{
+			this.catCount = data.catCount;
+			this.categories = data.categories;
+			this.occurrences = data.occurrences;
+			this.wordVector	= data.wordVector;
+			return true;
+		}
+		return false;
 	}
 }

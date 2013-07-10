@@ -1,12 +1,14 @@
 package at.rovo.classifier.svm.struct;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import at.rovo.classifier.TrainingData;
 import at.rovo.classifier.svm.KernelType;
 
@@ -132,5 +134,19 @@ public class Problem implements Serializable, TrainingData<Number,Node[][]>
 		}
 
 		return prob;
+	}
+
+	@Override
+	public void saveData(File directory, String name)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean loadData(File serializedObject)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

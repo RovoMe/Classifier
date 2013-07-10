@@ -5,7 +5,9 @@
 	<groupId>at.rovo.classifier</groupId>
 	<artifactId>Classifier</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>Classifier</name>
+	<description>Classifier framework</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,6 +51,4 @@
 			</plugin>		
 		</plugins>
 	</build>
-
-	<description>Classifier framework</description>
 </project>

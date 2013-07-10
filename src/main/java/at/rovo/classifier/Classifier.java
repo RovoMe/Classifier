@@ -1,19 +1,8 @@
 package at.rovo.classifier;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * <p>
@@ -35,8 +24,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Classifier<F extends Serializable, C extends Serializable>
 {
-	/** The logger of this class **/
-	private static Logger logger = LogManager.getLogger(Classifier.class.getName());
 	/** The actual training data which it uses to classify features **/
 	protected TrainingData<F,C> trainingData = null;
 	/**	The data to test the trained model against with **/
@@ -108,34 +95,7 @@ public abstract class Classifier<F extends Serializable, C extends Serializable>
 	 */
 	public void saveData(File directory, String name)
 	{
-		try 
-		{
-			FileOutputStream fos = new FileOutputStream(directory.getAbsoluteFile()+"\\"+name);
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			ObjectOutput object = null;
-			try 
-			{
-				object = new ObjectOutputStream(bos);
-				object.writeObject(this.trainingData);
-			} 
-			catch (IOException e) 
-			{
-				logger.catching(e);
-			}
-			finally
-			{
-				if (object != null)
-					object.close();
-				if (bos != null)
-					bos.close();
-				if (fos != null)
-					fos.close();
-			}
-		} 
-		catch (IOException e)
-		{
-			logger.catching(e);
-		}
+		this.trainingData.saveData(directory, name);
 	}
 	
 	/**
@@ -148,52 +108,7 @@ public abstract class Classifier<F extends Serializable, C extends Serializable>
 	 *            object
 	 * @return true if the data could be loaded; false otherwise
 	 */
-	@SuppressWarnings("unchecked")
-	public boolean loadData(File serializedObject)
-	{
-		TrainingData<F,C> data = null;
-		try
-		{
-			FileInputStream fis = new FileInputStream(serializedObject);
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			ObjectInputStream ois = new ObjectInputStream(bis);
-			try
-			{
-				Object obj = ois.readObject();
-				if (obj instanceof TrainingData)
-				{
-					data = (TrainingData<F, C>)obj;
-					logger.info("Found trained data for: {}", data);
-				}
-				else
-					logger.error("File is not a valid data object for this classifier!");
-			}
-			catch (IOException | ClassNotFoundException e) 
-			{
-				logger.catching(e);
-			}
-			finally
-			{
-				if (ois != null)
-					ois.close();
-				if (bis != null)
-					bis.close();
-				if (fis != null)
-					fis.close();
-			}
-		}
-		catch (IOException e) 
-		{
-			logger.catching(e);
-		}
-		
-		if (data != null)
-		{
-			this.trainingData = data;
-			return true;
-		}
-		return false;
-	}
+	public abstract boolean loadData(File serializedObject);
 	
 	/**
 	 * <p>

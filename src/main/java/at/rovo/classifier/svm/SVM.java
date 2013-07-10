@@ -1,11 +1,14 @@
 package at.rovo.classifier.svm;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import at.rovo.classifier.Classifier;
 import at.rovo.classifier.svm.solver.instance.CSVC;
 import at.rovo.classifier.svm.solver.instance.EpsilonSVR;
@@ -1180,5 +1183,12 @@ public class SVM extends Classifier<Node[],Double>
 			
 			this.model.save(this.param.modelFileName);
 		}
+	}
+
+	@Override
+	public boolean loadData(File serializedObject)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -1,5 +1,6 @@
 package at.rovo.classifier.naiveBayes;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.List;
@@ -36,6 +37,7 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 		super();
 		this.method = method;
 		this.trainingData = NBTrainingData.create(method);
+		super.trainingData = this.trainingData;
 		this.catProb = new Hashtable<C,Double>();
 	}
 	
@@ -51,6 +53,12 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 		this.catProb = new Hashtable<C,Double>();
 	}
 				
+	@Override
+	public boolean loadData(File serializedObject)
+	{
+		return this.trainingData.loadData(serializedObject);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//                               P R O B A B I L I T Y    S E C T I O N
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
