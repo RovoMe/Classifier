@@ -2,6 +2,7 @@ package at.rovo.classifier.naiveBayes;
 
 import java.io.Serializable;
 
+@SuppressWarnings("unused")
 public class SmoothedNaiveBayes<F extends Serializable, C extends Serializable> extends NormalNaiveBayes<F,C>
 {
 	private double smoothingPrior = 0.0;
@@ -37,28 +38,37 @@ public class SmoothedNaiveBayes<F extends Serializable, C extends Serializable> 
 	 * 
 	 * @param feature Feature or word the probability should be calculated for
 	 * @param category The category the feature/word have to be in
-	 * @param smoothingPrior accounts for features not present in the learning 
-	 *                       samples and prevents zero probabilities in further 
-	 *                       computations
+	 *
 	 * @return The probability of the feature given its category
 	 */
 	@Override
 	public double getConditionalProbability(F feature, C category)
 	{
 		// P(F|C)
-		String output = null;
-		if (logger.isDebugEnabled())
-			output = "   P('"+feature+"'|'"+category+"') = ";
+		StringBuilder output = null;
+		if (LOG.isDebugEnabled())
+		{
+			output = new StringBuilder();
+			output.append("   P('");
+			output.append(feature);
+			output.append("'|'");
+			output.append(category);
+			output.append("') = ");
+		}
 		long samplesForCategory = this.trainingData.getNumberOfSamplesForCategory(category);
 		if (samplesForCategory == 0)
+		{
 			return 0.;
+		}
 		// The total number of times this feature appeared in this
 		// category divided by the total number of items in this category
 		// application of the multinomial event model
 		int featCount = this.trainingData.getFeatureCount(feature, category);
 		double result = ((double)featCount+this.smoothingPrior)/(samplesForCategory+this.smoothingPrior*this.trainingData.getTotalNumberOfFeatures());
-		if (logger.isDebugEnabled())
-			logger.debug(output+featCount+"/"+samplesForCategory+" = "+result);
+		if (LOG.isDebugEnabled() && output != null)
+		{
+			LOG.debug("{}{}/{} = {}", output.toString(), featCount, samplesForCategory, result);
+		}
 		return result;
 	}
 	
@@ -73,9 +83,6 @@ public class SmoothedNaiveBayes<F extends Serializable, C extends Serializable> 
 	 * 
 	 * @param features Features or words the probability should be calculated for
 	 * @param category The category the features/words have to be in
-	 * @param smoothingPrior accounts for features not present in the learning 
-	 *                       samples and prevents zero probabilities in further 
-	 *                       computations
 	 * @return The probability of the features given their category
 	 */
 	@Override
@@ -85,20 +92,31 @@ public class SmoothedNaiveBayes<F extends Serializable, C extends Serializable> 
 		// P(F1,F2|C) = P(F1|C)*P(F2|C,F1) but as F1 and F2 are statistically 
 		//                                 independent (naive assumption)
 		//              P(F1|C)*P(F2|C)
-		String output = null;
-		if (logger.isDebugEnabled())
+		StringBuilder output = null;
+		if (LOG.isDebugEnabled())
 		{
-			output = "   P(";
+			output = new StringBuilder();
+			output.append("   P(");
 			for (F feature : features)
-				output += "'"+feature+"',";
-			output = output.substring(0, output.length()-1);
-			output += "|'"+category+"') = ";
+			{
+				output.append("'");
+				output.append(feature);
+				output.append("',");
+			}
+			output.delete(output.length()-1, output.length());
+			output.append("|'");
+			output.append(category);
+			output.append("') = ");
 		}
 		double prob = 1;
 		for (F feature : features)
+		{
 			prob *= this.getConditionalProbability(feature, category);
-		if (logger.isDebugEnabled())
-			logger.debug(output+prob);
+		}
+		if (LOG.isDebugEnabled() && output != null)
+		{
+			LOG.debug("{}{}", output.toString(), prob);
+		}
 		return prob;
 	}
 }

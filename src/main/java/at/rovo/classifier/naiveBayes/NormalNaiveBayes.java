@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * <p>Implementation of a naive Bayes classifier which uses probabilities extracted
  * from training examples to divide certain candidates into their appropriate classes.</p>
- * <p>The current implementation only supports a multinomial event model.</p>
+ * <p>The current implementation only supports a multinominal event model.</p>
  * <p>This implementation was originally based on the code presented in "Programming 
  * Collective Intelligence" by Toby Segaran (ISBN: 978-0-596-52932-1; 2007) but has
  * changed massively since the beginning.</p>
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class NormalNaiveBayes<F extends Serializable, C extends Serializable> extends NaiveBayes<F,C>
 {
-	protected static Logger logger = LogManager.getLogger(NormalNaiveBayes.class.getName());
+	protected static Logger LOG = LogManager.getLogger(NormalNaiveBayes.class.getName());
 	
 	// for faster lookup
 	/** Contains the probability for each category */
@@ -38,7 +38,7 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 		this.method = method;
 		this.trainingData = NBTrainingData.create(method);
 		super.trainingData = this.trainingData;
-		this.catProb = new Hashtable<C,Double>();
+		this.catProb = new Hashtable<>();
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 	protected NormalNaiveBayes(String name)
 	{
 		super(name);
-		this.catProb = new Hashtable<C,Double>();
+		this.catProb = new Hashtable<>();
 	}
 				
 	@Override
@@ -75,11 +75,18 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 	{
 		// P(C) = number of items in category / total number in all categories
 		if (this.catProb.get(category) == null)
-			this.catProb.put(category, (double)this.trainingData.getNumberOfSamplesForCategory(category) 
+		{
+			this.catProb.put(category, (double) this.trainingData.getNumberOfSamplesForCategory(category)
 					/ this.trainingData.getTotalNumberOfSamples());
-		if (logger.isDebugEnabled())
-			logger.debug("   P('"+category+"') = "+this.trainingData.getNumberOfSamplesForCategory(category)+
-					"/"+this.trainingData.getTotalNumberOfSamples()+" = "+this.catProb.get(category));
+		}
+		if (LOG.isDebugEnabled())
+		{
+			LOG.debug("   P('{}') = {}/{} = {}",
+					category,
+					this.trainingData.getNumberOfSamplesForCategory(category),
+					this.trainingData.getTotalNumberOfSamples(),
+					this.catProb.get(category));
+		}
 		return this.catProb.get(category);
 	}
 	
@@ -96,26 +103,32 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 	{
 		// P(F) = P(F|C1)*P(C1) + ... + P(F|Cn)*P(Cn)
 		String output = null;
-		if (logger.isDebugEnabled())
-			output = "   P('"+feature+"') = ";
+		if (LOG.isDebugEnabled())
+		{
+			output = "   P('" + feature + "') = ";
+		}
 		double p = 0;
 		// Runs through every defined category
 		// and sums up the conditional probability P(X|C) times the probability of the category P(C)
 		for (C category : this.trainingData.getCategories())
 		{
-			if (logger.isDebugEnabled())
-				output += "P('"+feature+"'|'"+category+"')*P('"+category+"') + ";
+			if (LOG.isDebugEnabled())
+			{
+				output += "P('" + feature + "'|'" + category + "')*P('" + category + "') + ";
+			}
 			p += this.getConditionalProbability(feature, category) * this.getCategoryProbability(category);
 		}
-		if (logger.isDebugEnabled())
-			logger.debug(output.substring(0,output.length()-3)+": "+p);
+		if (LOG.isDebugEnabled() && output != null)
+		{
+			LOG.debug("{}: {}", output.substring(0, output.length() - 3), p);
+		}
 		return p;
 	}
 	
 	/**
 	 * <p>Calculates the probability for a certain set of features.</p>
 	 * 
-	 * @param feature The feature whose probability should be calculated
+	 * @param features The feature whose probability should be calculated
 	 * @return The combined probability of the provided features
 	 */
 	public double getFeatureProbability(F[] features)
@@ -146,17 +159,23 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 	{
 		// P(F|C)
 		String output = null;
-		if (logger.isDebugEnabled())
-			output = "   P('"+feature+"'|'"+category+"') = ";
+		if (LOG.isDebugEnabled())
+		{
+			output = "   P('" + feature + "'|'" + category + "') = ";
+		}
 		long samplesForCategory = this.trainingData.getNumberOfSamplesForCategory(category);
 		if (samplesForCategory == 0)
+		{
 			return 0.;
+		}
 		// The total number of times this feature appeared in this
 		// category divided by the total number of items in this category
 		int featCount = this.trainingData.getFeatureCount(feature, category);
 		double result = (double)featCount/samplesForCategory;
-		if (logger.isDebugEnabled())
-			logger.debug(output+featCount+"/"+samplesForCategory+" = "+result);
+		if (LOG.isDebugEnabled())
+		{
+			LOG.debug("{}{}/{} = {}", output, featCount, samplesForCategory, result);
+		}
 		return result;
 	}
 		
@@ -175,19 +194,25 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 		//                                 independent (naive assumption)
 		//              P(F1|C)*P(F2|C)
 		String output = null;
-		if (logger.isDebugEnabled())
+		if (LOG.isDebugEnabled())
 		{
 			output = "   P(";
 			for (F feature : features)
-				output += "'"+feature+"',";
+			{
+				output += "'" + feature + "',";
+			}
 			output = output.substring(0, output.length()-1);
 			output += "|'"+category+"') = ";
 		}
 		double prob = 1;
 		for (F feature : features)
+		{
 			prob *= this.getConditionalProbability(feature, category);
-		if (logger.isDebugEnabled())
-			logger.debug(output+prob);
+		}
+		if (LOG.isDebugEnabled())
+		{
+			LOG.debug("{}{}", output, prob);
+		}
 		return prob;
 	}
 		
@@ -210,7 +235,9 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 			double featProb = this.getFeatureProbability(item);
 
 			if (featProb == 0)
+			{
 				return 0.;
+			}
 			return condProb*catProb / featProb;
 		}
 		else
@@ -238,7 +265,9 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 			double featProb = this.getFeatureProbability(items);
 			
 			if (featProb == 0)
+			{
 				return 0.;
+			}
 			return condProb*catProb / featProb;
 		}
 		else
@@ -252,7 +281,9 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 	public void train(F item, C category)
 	{
 		if (this.trainingData == null)
+		{
 			this.trainingData = NBTrainingData.create(this.method);
+		}
 		// increment the count for every feature with this category
 		this.trainingData.incrementFeature(item, category);
 		this.trainingData.incrementNumberOfSamplesForCategory(category);
@@ -262,9 +293,13 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 	public void train(F[] items, C category)
 	{
 		if (this.trainingData == null)
+		{
 			this.trainingData = NBTrainingData.create(this.method);
+		}
 		for (F item : items)
+		{
 			this.trainingData.incrementFeature(item, category);
+		}
 		this.trainingData.incrementNumberOfSamplesForCategory(category);
 	}
 	
@@ -272,16 +307,20 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 	public void train(List<F> items, C category)
 	{
 		if (this.trainingData == null)
+		{
 			this.trainingData = NBTrainingData.create(this.method);
+		}
 		for (F item : items)
+		{
 			this.trainingData.incrementFeature(item, category);
+		}
 		this.trainingData.incrementNumberOfSamplesForCategory(category);
 	}
 	
 	@Override
 	public C classify(F item)
 	{
-		Map<C, Double> probs = new Hashtable<C, Double>();
+		Map<C, Double> probs = new Hashtable<>();
 		// find the category with the highest probability
 		double max = 0.0f;
 		C best = null;
@@ -298,10 +337,14 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 		// Make sure the probability exceeds threshold*next best
 		for (C cat : probs.keySet())
 		{
-			if (cat==best) 
+			if (cat==best)
+			{
 				continue;
+			}
 			if (probs.get(cat)*this.getThreshold(best)>probs.get(best))
+			{
 				return null;
+			}
 		}
 		return best;
 	}
@@ -309,7 +352,7 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 	@Override
 	public C classify(F[] items)
 	{
-		Map<C, Double> probs = new Hashtable<C, Double>();
+		Map<C, Double> probs = new Hashtable<>();
 		// find the category with the highest probability
 		double max = 0.0f;
 		C best = null;
@@ -326,10 +369,14 @@ public class NormalNaiveBayes<F extends Serializable, C extends Serializable> ex
 		// Make sure the probability exceeds threshold*next best
 		for (C cat : probs.keySet())
 		{
-			if (cat==best) 
+			if (cat==best)
+			{
 				continue;
+			}
 			if (probs.get(cat)*this.getThreshold(best)>probs.get(best))
+			{
 				return null;
+			}
 		}
 		return best;
 	}

@@ -66,7 +66,7 @@ import at.rovo.classifier.TrainingData;
 public class NBListTrainingData<F, C> extends NBTrainingData<F, C>
 {
 	/** The logger of this class **/
-	private static Logger logger = LogManager.getLogger(NBListTrainingData.class);
+	private static Logger LOG = LogManager.getLogger(NBListTrainingData.class);
 	/** Unique identifier necessary for serialization **/
 	private static final long serialVersionUID = -2101815681608863601L;
 	/** Stores the categories trained **/
@@ -86,10 +86,10 @@ public class NBListTrainingData<F, C> extends NBTrainingData<F, C>
 	 */
 	NBListTrainingData()
 	{
-		this.categories = new ArrayList<C>();
-		this.catCount = new ArrayList<Integer>();
-		this.wordVector = new Hashtable<F, Integer>();
-		this.occurrences = new ArrayList<List<Integer>>();
+		this.categories = new ArrayList<>();
+		this.catCount = new ArrayList<>();
+		this.wordVector = new Hashtable<>();
+		this.occurrences = new ArrayList<>();
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class NBListTrainingData<F, C> extends NBTrainingData<F, C>
 		{
 			this.categories.add(category);
 			this.catCount.add(0);
-			List<Integer> list = new ArrayList<Integer>();
+			List<Integer> list = new ArrayList<>();
 			this.occurrences.add(list);
 			// we have to fill the occurrences of the new category up to the
 			// length of the other categories
@@ -207,33 +207,15 @@ public class NBListTrainingData<F, C> extends NBTrainingData<F, C>
 	@Override
 	public void saveData(File directory, String name)
 	{
-		try 
+		try (ObjectOutput object = new ObjectOutputStream(
+				new BufferedOutputStream(
+						new FileOutputStream(directory.getAbsoluteFile()+"/"+name))))
 		{
-			FileOutputStream fos = new FileOutputStream(directory.getAbsoluteFile()+"\\"+name);
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			ObjectOutput object = null;
-			try 
-			{
-				object = new ObjectOutputStream(bos);
-				object.writeObject(this);
-			} 
-			catch (IOException e) 
-			{
-				logger.catching(e);
-			}
-			finally
-			{
-				if (object != null)
-					object.close();
-				if (bos != null)
-					bos.close();
-				if (fos != null)
-					fos.close();
-			}
-		} 
+			object.writeObject(this);
+		}
 		catch (IOException e)
 		{
-			logger.catching(e);
+			LOG.error(e);
 		}
 	}
 	
@@ -242,39 +224,22 @@ public class NBListTrainingData<F, C> extends NBTrainingData<F, C>
 	public boolean loadData(File serializedObject)
 	{
 		NBListTrainingData<F,C> data = null;
-		try
+		try (ObjectInputStream ois = new ObjectInputStream(
+				new BufferedInputStream(
+						new FileInputStream(serializedObject))))
 		{
-			FileInputStream fis = new FileInputStream(serializedObject);
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			ObjectInputStream ois = new ObjectInputStream(bis);
-			try
+			Object obj = ois.readObject();
+			if (obj instanceof TrainingData)
 			{
-				Object obj = ois.readObject();
-				if (obj instanceof TrainingData)
-				{
-					data = (NBListTrainingData<F, C>)obj;
-					logger.info("Found trained data for: {}", data);
-				}
-				else
-					logger.error("File is not a valid data object for this classifier!");
+				data = (NBListTrainingData<F, C>)obj;
+				LOG.info("Found trained data for: {}", data);
 			}
-			catch (IOException | ClassNotFoundException e) 
-			{
-				logger.catching(e);
-			}
-			finally
-			{
-				if (ois != null)
-					ois.close();
-				if (bis != null)
-					bis.close();
-				if (fis != null)
-					fis.close();
-			}
+			else
+				LOG.error("File is not a valid data object for this classifier!");
 		}
-		catch (IOException e) 
+		catch (IOException | ClassNotFoundException e)
 		{
-			logger.catching(e);
+			LOG.error("Error while loading classifier data", e);
 		}
 		
 		if (data != null)

@@ -44,9 +44,9 @@ public abstract class NBTrainingData<F,C> implements Serializable, TrainingData<
 	static <F,C> NBTrainingData<F,C> create(TrainingDataStorageMethod method)
 	{
 		if (TrainingDataStorageMethod.MAP.equals(method))
-			return new NBMapTrainingData<F,C>();
+			return new NBMapTrainingData<>();
 		else if (TrainingDataStorageMethod.LIST.equals(method))
-			return new NBListTrainingData<F,C>();
+			return new NBListTrainingData<>();
 		else
 			return null;
 	}

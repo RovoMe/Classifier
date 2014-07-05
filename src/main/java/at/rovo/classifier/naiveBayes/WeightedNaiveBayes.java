@@ -2,6 +2,7 @@ package at.rovo.classifier.naiveBayes;
 
 import java.io.Serializable;
 
+@SuppressWarnings("unused")
 public class WeightedNaiveBayes<F extends Serializable, C extends Serializable> extends NormalNaiveBayes<F,C>
 {
 	protected WeightedNaiveBayes(TrainingDataStorageMethod method)
@@ -31,14 +32,16 @@ public class WeightedNaiveBayes<F extends Serializable, C extends Serializable> 
 		// Runs through every defined category
 		// and sums up the conditional probability P(X|C) times the probability of the category P(C)
 		for (C category : this.trainingData.getCategories())
+		{
 			p += this.getConditionalProbability(feature, category) * this.getCategoryProbability(category);
+		}
 		return p;
 	}
 	
 	/**
 	 * <p>Calculates the weighted Probability for a certain set of features.</p>
 	 * 
-	 * @param feature The feature whose probability should be calculated
+	 * @param features The feature whose probability should be calculated
 	 * @return The probability of a certain feature
 	 */
 	@Override
@@ -95,8 +98,11 @@ public class WeightedNaiveBayes<F extends Serializable, C extends Serializable> 
 		long count = this.trainingData.getFeatureCount(feature);
 		double condProb = super.getConditionalProbability(feature, category);
 		double prob = (weight*assumedProb + count*condProb) / (count+weight);
-		if (logger.isDebugEnabled())
-			logger.debug("   wP('"+feature+"'|'"+category+"') = (weight="+weight+"*assumedProb="+assumedProb+" + count="+count+"*condProb="+condProb+") / (count="+count+"+weight="+weight+") = "+prob);
+		if (LOG.isDebugEnabled())
+		{
+			LOG.debug("   wP('{}'|'{}') = (weight={}*assumedProb={} + count={}*condProb={}) / (count={}+weight={}) = {}",
+					feature, category, weight, assumedProb, count, condProb, count, weight, prob);
+		}
 		return prob;
 	}
 
@@ -159,9 +165,13 @@ public class WeightedNaiveBayes<F extends Serializable, C extends Serializable> 
 		{
 //			if (this.trainingData.getData().get(category).getFeatures().containsKey(feature))
 			if (this.trainingData.getFeatureCount(feature, category) > 0)
+			{
 				p *= this.getConditionalProbability(feature, category, weight, assumedProb);
+			}
 			else
-				p *= 1./this.trainingData.getNumberOfCategories();
+			{
+				p *= 1. / this.trainingData.getNumberOfCategories();
+			}
 		}
 		return p;
 	}
@@ -189,7 +199,9 @@ public class WeightedNaiveBayes<F extends Serializable, C extends Serializable> 
 		// Multiply the probabilities of all the features together
 		double p = 1.0;
 		for (F s : features)
+		{
 			p *= this.getConditionalProbability(s, category);
+		}
 		return p;
 	}
 	
@@ -218,7 +230,9 @@ public class WeightedNaiveBayes<F extends Serializable, C extends Serializable> 
 			double featProb = this.getFeatureProbability(item);
 
 			if (featProb == 0)
-				return 1./this.trainingData.getNumberOfCategories();
+			{
+				return 1. / this.trainingData.getNumberOfCategories();
+			}
 			return condProb*catProb / featProb;
 		}
 		else
@@ -255,7 +269,9 @@ public class WeightedNaiveBayes<F extends Serializable, C extends Serializable> 
 			double featProb = this.getFeatureProbability(items);
 
 			if (featProb == 0)
-				return 1./this.trainingData.getNumberOfCategories();
+			{
+				return 1. / this.trainingData.getNumberOfCategories();
+			}
 			return condProb*catProb / featProb;
 		}
 		else

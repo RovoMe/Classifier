@@ -33,7 +33,9 @@ public class EvenLikelihoodNaiveBayes<F extends Serializable, C extends Serializ
 	public double getProbability(C category, F item)
 	{
 		if (this.trainingData.getFeatureCount(item)==0)
+		{
 			return 0.5;
+		}
 		
 		return super.getProbability(category, item);
 	}	

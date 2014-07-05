@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class CategoryEntry<F,C> implements Serializable
 {
 	private static final long serialVersionUID = -1510312537959434628L;
@@ -13,13 +14,13 @@ public class CategoryEntry<F,C> implements Serializable
 	public CategoryEntry()
 	{
 		this.numSamplesForCategory = 0L;
-		features = new Hashtable<F, Integer>();	
+		features = new Hashtable<>();
 	}
 	
 	public CategoryEntry(F feature)
 	{
 		this.numSamplesForCategory = 0L;
-		features = new Hashtable<F, Integer>();
+		features = new Hashtable<>();
 		features.put(feature, 1);
 	}
 	

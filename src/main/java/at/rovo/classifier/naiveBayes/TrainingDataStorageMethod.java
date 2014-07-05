@@ -1,5 +1,8 @@
 package at.rovo.classifier.naiveBayes;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * Defines the form the training data used by the naive Bayes implementation is

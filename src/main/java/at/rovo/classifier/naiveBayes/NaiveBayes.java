@@ -19,7 +19,7 @@ import at.rovo.classifier.Classifier;
 public abstract class NaiveBayes<F extends Serializable, C extends Serializable> extends Classifier<F,C>
 {
 	/** Defines threshold for classification */
-	private Map<C, Double> threshold = new Hashtable<C, Double>();
+	private Map<C, Double> threshold = new Hashtable<>();
 	
 	/**
 	 * <p>Hides the constructor except for child-classes. This forces external
@@ -59,7 +59,9 @@ public abstract class NaiveBayes<F extends Serializable, C extends Serializable>
 	public double getThreshold(C category)
 	{
 		if (!this.threshold.containsKey(category))
+		{
 			return 1.0;
+		}
 		return this.threshold.get(category);
 	}
 	
@@ -95,12 +97,20 @@ public abstract class NaiveBayes<F extends Serializable, C extends Serializable>
 	public static <F extends Serializable, C extends Serializable> NaiveBayes<F,C> create(ProbabilityCalculation pc, TrainingDataStorageMethod method)
 	{
 		if (ProbabilityCalculation.NORMAL.equals(pc))
-			return new NormalNaiveBayes<F,C>(method);
+		{
+			return new NormalNaiveBayes<>(method);
+		}
 		else if (ProbabilityCalculation.WEIGHTED.equals(pc))
-			return new WeightedNaiveBayes<F,C>(method);
+		{
+			return new WeightedNaiveBayes<>(method);
+		}
 		else if (ProbabilityCalculation.SMOOTHED.equals(pc))
-			return new SmoothedNaiveBayes<F,C>(method);
+		{
+			return new SmoothedNaiveBayes<>(method);
+		}
 		else
-			return new EvenLikelihoodNaiveBayes<F,C>(method);
+		{
+			return new EvenLikelihoodNaiveBayes<>(method);
+		}
 	}
 }

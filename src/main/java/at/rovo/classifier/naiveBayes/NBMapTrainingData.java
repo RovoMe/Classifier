@@ -68,7 +68,7 @@ public class NBMapTrainingData<F, C> extends NBTrainingData<F, C>
 	 */
 	NBMapTrainingData()
 	{
-		this.categories = new Hashtable<C, CategoryEntry<F, C>>();
+		this.categories = new Hashtable<>();
 	}
 
 	@Override
@@ -176,33 +176,15 @@ public class NBMapTrainingData<F, C> extends NBTrainingData<F, C>
 	@Override
 	public void saveData(File directory, String name)
 	{
-		try 
+		try (ObjectOutput object = new ObjectOutputStream(
+				new BufferedOutputStream(
+						new FileOutputStream(directory.getAbsoluteFile()+"/"+name))))
 		{
-			FileOutputStream fos = new FileOutputStream(directory.getAbsoluteFile()+"\\"+name);
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			ObjectOutput object = null;
-			try 
-			{
-				object = new ObjectOutputStream(bos);
-				object.writeObject(this);
-			} 
-			catch (IOException e) 
-			{
-				logger.catching(e);
-			}
-			finally
-			{
-				if (object != null)
-					object.close();
-				if (bos != null)
-					bos.close();
-				if (fos != null)
-					fos.close();
-			}
+			object.writeObject(this);
 		} 
 		catch (IOException e)
 		{
-			logger.catching(e);
+			logger.error("Error while persisting classifier data", e);
 		}
 	}
 	
@@ -211,39 +193,22 @@ public class NBMapTrainingData<F, C> extends NBTrainingData<F, C>
 	public boolean loadData(File serializedObject)
 	{
 		NBMapTrainingData<F,C> data = null;
-		try
+		try (ObjectInputStream ois = new ObjectInputStream(
+				new BufferedInputStream(
+						new FileInputStream(serializedObject))))
 		{
-			FileInputStream fis = new FileInputStream(serializedObject);
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			ObjectInputStream ois = new ObjectInputStream(bis);
-			try
+			Object obj = ois.readObject();
+			if (obj instanceof TrainingData)
 			{
-				Object obj = ois.readObject();
-				if (obj instanceof TrainingData)
-				{
-					data = (NBMapTrainingData<F, C>)obj;
-					logger.info("Found trained data for: {}", data);
-				}
-				else
-					logger.error("File is not a valid data object for this classifier!");
+				data = (NBMapTrainingData<F, C>)obj;
+				logger.info("Found trained data for: {}", data);
 			}
-			catch (IOException | ClassNotFoundException e) 
-			{
-				logger.catching(e);
-			}
-			finally
-			{
-				if (ois != null)
-					ois.close();
-				if (bis != null)
-					bis.close();
-				if (fis != null)
-					fis.close();
-			}
+			else
+				logger.error("File is not a valid data object for this classifier!");
 		}
-		catch (IOException e) 
+		catch (IOException | ClassNotFoundException e)
 		{
-			logger.catching(e);
+			logger.error("Error while loading classifier data", e);
 		}
 		
 		if (data != null)
