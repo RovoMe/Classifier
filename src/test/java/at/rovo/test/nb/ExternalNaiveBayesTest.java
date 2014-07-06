@@ -11,7 +11,7 @@ import at.rovo.classifier.naiveBayes.TrainingDataStorageMethod;
 
 public class ExternalNaiveBayesTest
 {
-	private static Logger logger = LogManager.getLogger(ExternalNaiveBayesTest.class.getName());
+	private static Logger LOG = LogManager.getLogger(ExternalNaiveBayesTest.class);
 	private NaiveBayes<String,String> nb = null;
 	
 	@Before
@@ -35,32 +35,32 @@ public class ExternalNaiveBayesTest
 	public void testClassification()
 	{
 		String category = this.nb.classify("quick rabbit".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick rabbit' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick rabbit' as: "+category);
 		Assert.assertEquals("classify 'quick rabbit' as ", "good", category);
 		
 		category = this.nb.classify("quick money".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick money' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick money' as: "+category);
 		Assert.assertEquals("classify 'quick money' as ", "bad", category);
 		
-		if (logger.isDebugEnabled())
-			logger.debug("Setting Threshold to 3.0");
+		if (LOG.isDebugEnabled())
+			LOG.debug("Setting Threshold to 3.0");
 		this.nb.setThreshold("bad", 3.0f);
 		
 		category = this.nb.classify("quick money".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick money' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick money' as: "+category);
 		Assert.assertNull("classify 'quick money' as ", category);
 		
-		if (logger.isDebugEnabled())
-			logger.debug("Train sample data 10 times");
+		if (LOG.isDebugEnabled())
+			LOG.debug("Train sample data 10 times");
 		for (int i=0; i<10; i++)
 			this.sampleTrain();
 		
 		category = this.nb.classify("quick money".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick money' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick money' as: "+category);
 		Assert.assertEquals("classify 'quick money' as ", "bad", category);
 	}
 }

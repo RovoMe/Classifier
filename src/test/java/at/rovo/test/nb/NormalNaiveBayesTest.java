@@ -11,7 +11,7 @@ import at.rovo.classifier.naiveBayes.TrainingDataStorageMethod;
 
 public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 {
-	private static Logger logger = LogManager.getLogger(NormalNaiveBayesTest.class.getName());
+	private static Logger LOG = LogManager.getLogger(NormalNaiveBayesTest.class.getName());
 		
 	public NormalNaiveBayesTest()
 	{
@@ -38,31 +38,31 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 	{	
 		// 'quick' occurred in 3 out of 5 examples
 		double p = this.getFeatureProbability("quick");
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick'): "+p);
 		Assert.assertEquals("P('quick') ", 3./5, p, 0.);
 		
 		// 'money' occurred in 1 out of 5 examples
 		p = this.getFeatureProbability("money");
-		if (logger.isDebugEnabled())
-			logger.debug("P('money'): "+ p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('money'): "+ p);
 		Assert.assertEquals("P('money') ", 1./5, p, 0.);
 		
 		// 'jumps' occurred in 2 out of 5 examples
 		p = this.getFeatureProbability("jumps");
-		if (logger.isDebugEnabled())
-			logger.debug("P('jumps'): "+ p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('jumps'): "+ p);
 		Assert.assertEquals("P('jumps') ", 2./5, p, 0.000001);
 		
 		// 'notInThere' occurred in 0 out of 5 examples
 		p = this.getFeatureProbability("notInThere");
-		if (logger.isDebugEnabled())
-			logger.debug("P('notInThere'): "+ p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('notInThere'): "+ p);
 		Assert.assertEquals("P('notInThere') ", 0./5, p, 0.);
 		
 		p = this.getFeatureProbability("quick money".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick','money'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick','money'): "+p);
 		// P('quick','money') = P('quick'|'good')*P('money'|'good')*P('good') + 
 		//                      P('quick'|'bad')*P('money'|'bad')*P('bad')
 		// P('quick'|'good') = 2/3 - 2 out of 3 samples labeled as 'good' contain quick
@@ -76,8 +76,8 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 		Assert.assertEquals("P('quick','money') ", 0.1, p, 0.);
 		
 		p = this.getFeatureProbability("quick notInThere".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick','notInThere'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick','notInThere'): "+p);
 		
 		// P('quick','notInThere') = P('quick'|'good')*P('notInThere'|'good')*P('good') + 
 		//                           P('quick'|'bad')*P('notInThere'|'bad')*P('bad')
@@ -89,8 +89,8 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 		Assert.assertEquals("P('quick','notInThere') ", 0., p, 0.);
 		
 		p = this.getFeatureProbability("quick rabbit".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick','rabbit'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick','rabbit'): "+p);
 		// P('quick', 'rabbit') = P('quick'|'good')*P('rabbit'|'good')*P('good') +
 		//                        P('quick'|'bad')*P('rabbit'|'bad')*P('bad')
 		// P('quick'|'good') = 2/3 - 2 out of 3 samples labeled as 'good' contain 'quick'
@@ -109,60 +109,60 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 	public void testConditionalProbabilities()
 	{	
 		double featProb = this.getConditionalProbability("quick", "good");
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick'|'good'): " + featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick'|'good'): " + featProb);
 		// 'quick' is included in 2 of the 3 training sets which have been labeled as good
 		Assert.assertEquals("P('quick'|'good') ", 2.0/3.0, featProb, 0.);
 		
 		featProb = this.getConditionalProbability("quick", "bad");
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick'|'bad'): " + featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick'|'bad'): " + featProb);
 		// 'quick' is included in 1 of the 2 training sets which have been labeled as bad
 		Assert.assertEquals("P('quick'|'bad') ", 1.0/2.0, featProb, 0.);
 		
 		featProb = this.getConditionalProbability("jumps", "good");
-		if (logger.isDebugEnabled())
-			logger.debug("P('jumps'|'good'): " + featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('jumps'|'good'): " + featProb);
 		// 'jumps' is included in 2 of the 3 training sets which have been labeled as good
 		Assert.assertEquals("P('jumps'|'good') ", 2.0/3.0, featProb, 0.);
 		
 		featProb = this.getConditionalProbability("jumps", "bad");
-		if (logger.isDebugEnabled())
-			logger.debug("P('jumps'|'bad'): " + featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('jumps'|'bad'): " + featProb);
 		// 'jumps' is included in 0 of the 2 training sets which have been labeled as bad
 		Assert.assertEquals("P('jumps'|'bad') ", 0.0/2.0, featProb, 0.);
 		
 		featProb = this.getConditionalProbability("notInThere", "good");
-		if (logger.isDebugEnabled())
-			logger.debug("P('notInThere'|'good'): " + featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('notInThere'|'good'): " + featProb);
 		// 'notInThere' is included in 0 of the 3 training sets which have been labeled as good
 		Assert.assertEquals("P('notInThere'|'good') ", 0.0/3.0, featProb, 0.);
 		
 		featProb = this.getConditionalProbability("notInThere", "bad");
-		if (logger.isDebugEnabled())
-			logger.debug("P('notInThere'|'bad'): " + featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('notInThere'|'bad'): " + featProb);
 		// 'notInThere' is included in 0 of the 2 training sets which have been labeled as bad
 		Assert.assertEquals("P('notInThere'|'bad') ", 0.0/2.0, featProb, 0.);
 		
 		featProb = this.getConditionalProbability("quick", "unsure");
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick'|'unsure'): " + featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick'|'unsure'): " + featProb);
 		// 'quick' is included in 0 of the 0 training sets which have been labeled as unsure
 		Assert.assertEquals("P('quick'|'unsure') ", 0.0, featProb, 0.);
 		
 		featProb = this.getConditionalProbability("quick money".split("\\W"), "good");
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick','money'|'bad'): "+featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick','money'|'bad'): "+featProb);
 		Assert.assertEquals("P('quick','money'|'bad') ", (2./3.)*(0./3.), featProb, 0.);
 		
 		featProb = this.getConditionalProbability("quick money".split("\\W"), "bad");
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick','money'|'bad'): "+featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick','money'|'bad'): "+featProb);
 		Assert.assertEquals("P('quick','money'|'bad') ", (1./2.)*(1./2.), featProb, 0.);
 		
 		featProb = this.getConditionalProbability("quick notInThere".split("\\W"), "bad");
-		if (logger.isDebugEnabled())
-			logger.debug("P('quick','notInThere'|'bad'): "+featProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('quick','notInThere'|'bad'): "+featProb);
 		Assert.assertEquals("P('quick','notInThere'|'bad') ", (1./2.)*(0./2.), featProb, 0.);
 	}
 		
@@ -171,22 +171,22 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 	{
 		// P(C)
 		double catProb = this.getCategoryProbability("good");
-		if (logger.isDebugEnabled())
-			logger.debug("Probability of category 'good': "+catProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("Probability of category 'good': "+catProb);
 		// category count / total count
-		Assert.assertEquals("Probability of category 'good' ", new Double(3./5.), new Double(catProb), 0.);
+		Assert.assertEquals("Probability of category 'good' ", 3./5., catProb, 0.);
 		
 		catProb = this.getCategoryProbability("bad");
-		if (logger.isDebugEnabled())
-			logger.debug("Probability of category 'good': "+catProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("Probability of category 'good': "+catProb);
 		// category count / total count
-		Assert.assertEquals("Probability of category 'good' ", new Double(2./5.), new Double(catProb), 0.);
+		Assert.assertEquals("Probability of category 'good' ", 2./5., catProb, 0.);
 		
 		catProb = this.getCategoryProbability("notInThere");
-		if (logger.isDebugEnabled())
-			logger.debug("Probability of category 'good': "+catProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("Probability of category 'good': "+catProb);
 		// category count / total count
-		Assert.assertEquals("Probability of category 'good' ", new Double(0), new Double(catProb), 0.);
+		Assert.assertEquals("Probability of category 'good' ", 0, catProb, 0.);
 	}
 
 	
@@ -195,14 +195,14 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 	{	
 		// quick has 2 occurrences in good examples and total 3 occurrences
 		double p = this.getProbability("good", "quick");
-		if (logger.isDebugEnabled())
-			logger.debug("nb-P('good'|'quick'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-P('good'|'quick'): "+p);
 		Assert.assertEquals("nb-P('good'|'quick') ", 2./3, p, 0.);
 		
 		// quick has 1 occurrence in bad examples and total 3 occurrences
 		p = this.getProbability("bad", "quick");
-		if (logger.isDebugEnabled())
-			logger.debug("nb-P('bad'|'quick'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-P('bad'|'quick'): "+p);
 		Assert.assertEquals("nb-P('bad'|'quick') ", 1./3, p, 0.00005); // rounding-difference - result is: 0.33333333333333337
 		
 		// P(C|F) = P(F|C)*P(C)/P(F)
@@ -214,30 +214,30 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 		// P('bad') = 2/5
 		// (0/3*3/5) / (0/3*3/5 + 0/2*2/5) = 0
 		p = this.getProbability("good", "notInThere");
-		if (logger.isDebugEnabled())
-			logger.debug("nb-P('good'|'notInThere'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-P('good'|'notInThere'): "+p);
 		Assert.assertEquals("nb-P('good'|'notInThere') ", 0., p, 0.);
 		
 		p = this.getProbability("notExisting", "quick");
-		if (logger.isDebugEnabled())
-			logger.debug("nb-P('notExisting'|'quick'): "+ p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-P('notExisting'|'quick'): "+ p);
 		Assert.assertEquals("nb-P('notExisting'|'quick') ", 0., p, 0.);
 		
 		p = this.getProbability("notExisting", "notInThere");
-		if (logger.isDebugEnabled())
-			logger.debug("nb-P('notExisting'|'notInThere'): "+ p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-P('notExisting'|'notInThere'): "+ p);
 		Assert.assertEquals("nb-P('notExisting'|'notInThere') ", 0., p, 0.);
 			
 		String[] notInThere = new String[] { "notInThere", "notInThereToo" };
 		p = this.getProbability("notExisting", notInThere);
-		if (logger.isDebugEnabled())
-			logger.debug("nb-P('notExisting'|'notInThere','notInThereToo'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-P('notExisting'|'notInThere','notInThereToo'): "+p);
 		Assert.assertEquals("nb-P('notExisting'|'notInThere','notInThereToo') ", 0., p, 0.);
 		
 		String[] words = new String[] { "quick", "rabbit" };
 		p = this.getProbability("good", words);
-		if (logger.isDebugEnabled())
-			logger.debug("nb-P('good'|'quick','rabbit'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-P('good'|'quick','rabbit'): "+p);
 
 //		11:16:50 DEBUG NaiveBayes.getCategoryProbability() -    P('good') = 3/5 = 0.6
 //		11:16:50 DEBUG NaiveBayes.getConditionalProbability() -    P('quick'|'good') = 2/3 = 0.6666666666666666
@@ -253,8 +253,8 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 //		
 		// Weka: 0.884; own result 1.0000000000000002
 		double prob1 = this.getProbability("good", "quick rabbit".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("P('good'|'quick','rabbit') "+prob1);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('good'|'quick','rabbit') "+prob1);
 		Assert.assertEquals("P('good'|'quick','rabbit') ", p,prob1, 0.);
 //		
 //		11:16:50 DEBUG NaiveBayes.getCategoryProbability() -    P('bad') = 2/5 = 0.4
@@ -271,10 +271,10 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 //		
 		// Weka: 0.116, own result 0.0
 		double prob2 = this.getProbability("bad", "quick rabbit".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("P('bad'|'quick','rabbit'): "+prob2);
+		if (LOG.isDebugEnabled())
+			LOG.debug("P('bad'|'quick','rabbit'): "+prob2);
 		
-		Assert.assertEquals("Testing the sum of probability and complementary probability",new Double(1.), new Double(prob1+prob2), new Double(0.00000000003));
+		Assert.assertEquals("Testing the sum of probability and complementary probability",1., prob1+prob2, 0.00000000003);
 	}
 	
 	
@@ -282,13 +282,13 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 	public void testClassification()
 	{
 		String category = this.classify("quick rabbit".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick rabbit' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick rabbit' as: "+category);
 		Assert.assertEquals("classify 'quick rabbit' as", "good", category);
 		
 		category = this.classify("quick money".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick money' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick money' as: "+category);
 		Assert.assertEquals("classify 'quick money' as", "bad", category);
 	}
 }
