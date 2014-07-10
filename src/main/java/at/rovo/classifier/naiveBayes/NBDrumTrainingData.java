@@ -1,8 +1,8 @@
 package at.rovo.classifier.naiveBayes;
 
+import at.rovo.caching.drum.Dispatcher;
 import at.rovo.caching.drum.Drum;
-import at.rovo.caching.drum.IDispatcher;
-import at.rovo.caching.drum.IDrum;
+import at.rovo.caching.drum.DrumBuilder;
 import at.rovo.caching.drum.data.ObjectSerializer;
 import at.rovo.caching.drum.util.DrumUtil;
 
@@ -19,13 +19,13 @@ import java.util.Map;
  * training data inside a backing cache.
  * </p>
  */
-public class NBDrumTrainingData<F, C> extends NBTrainingData<F, C> implements IDispatcher<DrumTrainingData<F, C>, ObjectSerializer<F>>
+public class NBDrumTrainingData<F, C> extends NBTrainingData<F, C> implements Dispatcher<DrumTrainingData<F, C>, ObjectSerializer<F>>
 {
 
 	private final HashMap<C, Integer> availableCategories = new HashMap<>();
 	private final Class<F> featureClass;
 	private final Class<C> categoryClass;
-	private final IDrum<DrumTrainingData<F, C>, ObjectSerializer<F>> drum;
+	private final Drum<DrumTrainingData<F, C>, ObjectSerializer<F>> drum;
 	private final Map<C, Integer> numSamplesPerCategory = new HashMap<>();
 	private final List<DrumTrainingData<F, C>> checkedTrainingData = new ArrayList<>();
 
@@ -41,8 +41,9 @@ public class NBDrumTrainingData<F, C> extends NBTrainingData<F, C> implements ID
 
 		try
 		{
-			drum = (Drum<DrumTrainingData<F,C>, ObjectSerializer<F>>)new Drum.Builder("classifier", DrumTrainingData.class, ObjectSerializer.class)
-					.numBucket(2)
+			DrumBuilder<DrumTrainingData<F,C>, ObjectSerializer<F>> builder =
+					new DrumBuilder<>("classifier", DrumTrainingData.class, ObjectSerializer.class);
+			drum = builder.numBucket(2)
 					.bufferSize(1024)
 					.dispatcher(this)
 					.build();

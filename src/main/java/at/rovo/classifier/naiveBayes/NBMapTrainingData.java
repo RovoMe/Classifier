@@ -52,7 +52,7 @@ import at.rovo.classifier.TrainingData;
 public class NBMapTrainingData<F, C> extends NBTrainingData<F, C>
 {
 	/** The logger of this class **/
-	private static Logger logger = LogManager.getLogger(NBMapTrainingData.class);	
+	private static Logger LOG = LogManager.getLogger(NBMapTrainingData.class);
 	/** Unique identifier necessary for serialization **/
 	private static final long serialVersionUID = -2101815681608863601L;
 	/** Map containing the trained data */
@@ -184,7 +184,7 @@ public class NBMapTrainingData<F, C> extends NBTrainingData<F, C>
 		} 
 		catch (IOException e)
 		{
-			logger.error("Error while persisting classifier data", e);
+			LOG.error("Error while persisting classifier data", e);
 		}
 	}
 	
@@ -201,14 +201,14 @@ public class NBMapTrainingData<F, C> extends NBTrainingData<F, C>
 			if (obj instanceof TrainingData)
 			{
 				data = (NBMapTrainingData<F, C>)obj;
-				logger.info("Found trained data for: {}", data);
+				LOG.info("Found trained data for: {}", data);
 			}
 			else
-				logger.error("File is not a valid data object for this classifier!");
+				LOG.error("File is not a valid data object for this classifier!");
 		}
 		catch (IOException | ClassNotFoundException e)
 		{
-			logger.error("Error while loading classifier data", e);
+			LOG.error("Error while loading classifier data", e);
 		}
 		
 		if (data != null)
