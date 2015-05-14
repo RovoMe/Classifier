@@ -1,5 +1,8 @@
 package at.rovo.classifier.svm.struct;
 
+import at.rovo.classifier.TrainingData;
+import at.rovo.classifier.svm.KernelType;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,17 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import at.rovo.classifier.TrainingData;
-import at.rovo.classifier.svm.KernelType;
-
 /**
- * <p>A <em>Problem</em> is a container for already parsed samples. A Sample 
- * moreover exists of the predefined class-label {@link #y} and a set of features
- * where each feature contains an index and a value field {@link #x}</p>
- * 
+ * A <em>Problem</em> is a container for already parsed samples. A Sample moreover exists of the predefined class-label
+ * {@link #y} and a set of features where each feature contains an index and a value field {@link #x}
+ *
  * @author Chih-Chung Chang, Chih-Jen Lin
  */
-public class Problem implements Serializable, TrainingData<Number,Node[][]>
+public class Problem implements Serializable, TrainingData<Number, Node[][]>
 {
 	/** Unique identifier necessary for serialization **/
 	private static final long serialVersionUID = 7396001955832580392L;
@@ -27,52 +26,54 @@ public class Problem implements Serializable, TrainingData<Number,Node[][]>
 	public int numInstances;
 	/** Contains the labels or classifications **/
 	public List<Double> y;
-	/** Contains the set of features the model should be trained with**/
+	/** Contains the set of features the model should be trained with **/
 	public List<Node[]> x;
 	/** **/
 	private int maxIndex;
-	
+
 	public Problem()
 	{
-		x = new ArrayList<Node[]>();
-		y = new ArrayList<Double>();
+		x = new ArrayList<>();
+		y = new ArrayList<>();
 	}
-	
+
 	public void add(Double label, Node[] features)
 	{
 		this.x.add(features);
 		this.y.add(label);
-		this.numInstances++;	
-		
-		this.maxIndex = Math.max(maxIndex, features[features.length-1].index);
+		this.numInstances++;
+
+		this.maxIndex = Math.max(maxIndex, features[features.length - 1].index);
 	}
-	
+
 	public int getMaxIndex()
 	{
 		return this.maxIndex;
 	}
-	
+
 	/**
-	 * <p>Creates a problem statement from the data provided as test data.</p>
-	 * <p>Therefore the test data is parsed. The first entry in every line is
-	 * the actual classification result. A value of 1 indicates a positive 
-	 * classification while a value of -1 indicates a negative one.</p>
-	 * <p>The remaining entries in the line are pairs of index:value, where index
-	 * may represent the index of a word inside a word-vector while a value of 1
-	 * indicates its positive occurrence in the document. By default a value of
-	 * 0 is taken for features not mentioned yet to reduce the necessity to 
-	 * provide every single feature.</p>
-	 * 
-	 * @param param The parameters provided to the application
-	 * @return The parsed test data converted to a Problem instance to train
-	 *         the classifier
-	 * @throws IOException If the training file cannot be read
+	 * Creates a problem statement from the data provided as test data.
+	 * <p>
+	 * Therefore the test data is parsed. The first entry in every line is the actual classification result. A value of
+	 * 1 indicates a positive classification while a value of -1 indicates a negative one.
+	 * <p>
+	 * The remaining entries in the line are pairs of index:value, where index may represent the index of a word inside
+	 * a word-vector while a value of 1 indicates its positive occurrence in the document. By default a value of 0 is
+	 * taken for features not mentioned yet to reduce the necessity to provide every single feature.
+	 *
+	 * @param param
+	 * 		The parameters provided to the application
+	 *
+	 * @return The parsed test data converted to a Problem instance to train the classifier
+	 *
+	 * @throws IOException
+	 * 		If the training file cannot be read
 	 */
 	public static Problem create(String inputFileName, Parameter param) throws IOException
 	{
 		BufferedReader fp = new BufferedReader(new FileReader(inputFileName));
-		List<Double> y = new ArrayList<Double>(); // will hold the classification
-		List<Node[]> x = new ArrayList<Node[]>(); // will hold the features
+		List<Double> y = new ArrayList<>(); // will hold the classification
+		List<Node[]> x = new ArrayList<>(); // will hold the features
 		int maxIndex = 0;
 
 		// read the test data from the file
@@ -80,7 +81,9 @@ public class Problem implements Serializable, TrainingData<Number,Node[][]>
 		{
 			String line = fp.readLine();
 			if (line == null)
+			{
 				break;
+			}
 
 			StringTokenizer st = new StringTokenizer(line, " \t\n\r\f:");
 
@@ -99,7 +102,9 @@ public class Problem implements Serializable, TrainingData<Number,Node[][]>
 				node[j].value = Double.parseDouble(st.nextToken());
 			}
 			if (m > 0)
+			{
 				maxIndex = Math.max(maxIndex, node[m - 1].index);
+			}
 			x.add(node);
 		}
 		fp.close();
@@ -113,7 +118,9 @@ public class Problem implements Serializable, TrainingData<Number,Node[][]>
 
 		// normalizes the radius used for RBF f.e.
 		if (param.gamma == 0 && maxIndex > 0)
+		{
 			param.gamma = 1.0 / maxIndex;
+		}
 
 		// check if the format for a pre-computed kernel type is appropriate
 		if (KernelType.PRECOMPUTED.equals(param.kernelType))
@@ -140,7 +147,7 @@ public class Problem implements Serializable, TrainingData<Number,Node[][]>
 	public void saveData(File directory, String name)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

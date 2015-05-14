@@ -3,91 +3,91 @@ package at.rovo.classifier.svm;
 public enum SVMType
 {
 	/**
-	 * <p>C-support vector classification (Boser et al., 1992; Cortes and Vapnik,
-	 * 1995) with C > 0 being the regularization parameter of the classification.</p>
+	 * C-support vector classification (Boser et al., 1992; Cortes and Vapnik, 1995) with C > 0 being the regularization
+	 * parameter of the classification.
 	 */
 	C_SVC(0)
-	{
-		public String toString()
-		{
-			return "c_svc"; 
-		}
-	},
+			{
+				public String toString()
+				{
+					return "c_svc";
+				}
+			},
 	/**
-	 * <p>ν-support vector classification (Schölkopf et al., 2000) with ν being
-	 * an upper bound on the fraction of training errors and a lower bound of 
-	 * the fraction of support vectors.</p>
+	 * ν-support vector classification (Schölkopf et al., 2000) with ν being an upper bound on the fraction of training
+	 * errors and a lower bound of the fraction of support vectors.
 	 */
 	NU_SVC(1)
-	{
-		public String toString()
-		{
-			return "nu_svc"; 
-		}
-	},
+			{
+				public String toString()
+				{
+					return "nu_svc";
+				}
+			},
 	/**
-	 * <p>One class SVM (Schölkopf et al., 2001) for estimating the support of 
-	 * a high-dimensional distribution.</p>
+	 * One class SVM (Schölkopf et al., 2001) for estimating the support of a high-dimensional distribution.
 	 */
 	ONE_CLASS(2)
-	{
-		public String toString()
-		{
-			return "one_class"; 
-		}
-	},
+			{
+				public String toString()
+				{
+					return "one_class";
+				}
+			},
 	/**
-	 * <p>Epsilon-support vector regression (Vapnik, 1998)</p>
+	 * Epsilon-support vector regression (Vapnik, 1998)
 	 */
 	EPSILON_SVR(3)
-	{
-		public String toString()
-		{
-			return "epsilonc_svr"; 
-		}
-	}, 
+			{
+				public String toString()
+				{
+					return "epsilonc_svr";
+				}
+			},
 	/**
-	 * <p>ν-support vector regression (Schölkopf et al., 2000) where parameter
-	 * v controls the number of support vectors used.</p>
+	 * ν-support vector regression (Schölkopf et al., 2000) where parameter v controls the number of support vectors
+	 * used.
 	 */
 	NU_SVR(4)
-	{
-		public String toString()
-		{
-			return "nu_svr"; 
-		}
-	};
+			{
+				public String toString()
+				{
+					return "nu_svr";
+				}
+			};
 	private int value;
-	
-	private SVMType(int value)
+
+	SVMType(int value)
 	{
 		this.value = value;
 	}
-	
+
 	/**
-	 * <p>Returns the ordinal index of the current SVM type.</p>
-	 * 
+	 * Returns the ordinal index of the current SVM type.
+	 *
 	 * @return The ordinal index of the SVM type
 	 */
 	public int valueOf()
 	{
 		return this.value;
 	}
-	
+
 	/**
-	 * <p>Returns the number of known SVM types.</p>
-	 * 
+	 * Returns the number of known SVM types.
+	 *
 	 * @return The number of known SVM types
 	 */
 	public static int length()
 	{
 		return 5;
 	}
-	
+
 	/**
-	 * <p>Returns a SVMType based on the ordinal index of the type.</p>
-	 * 
-	 * @param i The ordinal index of the SVM type
+	 * Returns a SVMType based on the ordinal index of the type.
+	 *
+	 * @param i
+	 * 		The ordinal index of the SVM type
+	 *
 	 * @return The SVM type corresponding to the ordinal index
 	 */
 	public static SVMType get(int i)
@@ -108,11 +108,13 @@ public enum SVMType
 				return SVMType.C_SVC;
 		}
 	}
-	
+
 	/**
-	 * <p>Returns a SVM type based on the name of the type.</p>
-	 * 
-	 * @param s The name of the SVM type
+	 * Returns a SVM type based on the name of the type.
+	 *
+	 * @param s
+	 * 		The name of the SVM type
+	 *
 	 * @return The SVM type corresponding to the provided name
 	 */
 	public static SVMType get(String s)

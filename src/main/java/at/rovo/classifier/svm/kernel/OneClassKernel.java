@@ -3,6 +3,7 @@ package at.rovo.classifier.svm.kernel;
 import at.rovo.classifier.svm.Cache;
 import at.rovo.classifier.svm.struct.Parameter;
 import at.rovo.classifier.svm.struct.Problem;
+import at.rovo.classifier.svm.utils.Utils;
 
 
 public class OneClassKernel extends Kernel
@@ -43,12 +44,6 @@ public class OneClassKernel extends Kernel
 	{
 		cache.swapIndex(i, j);
 		super.swapIndex(i, j);
-		do
-		{
-			double _ = QD[i];
-			QD[i] = QD[j];
-			QD[j] = _;
-		}
-		while (false);
+		Utils.swap(QD, i, j);
 	}
 }

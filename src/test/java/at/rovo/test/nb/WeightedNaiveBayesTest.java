@@ -9,9 +9,11 @@ import org.junit.Test;
 import at.rovo.classifier.naiveBayes.TrainingDataStorageMethod;
 import at.rovo.classifier.naiveBayes.WeightedNaiveBayes;
 
+import java.lang.invoke.MethodHandles;
+
 public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 {
-	private static Logger LOG = LogManager.getLogger(WeightedNaiveBayesTest.class);
+	private static Logger LOG = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 		
 	public WeightedNaiveBayesTest()
 	{

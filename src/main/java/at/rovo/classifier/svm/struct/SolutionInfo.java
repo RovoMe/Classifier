@@ -1,8 +1,8 @@
 package at.rovo.classifier.svm.struct;
 
 /**
- * <p>Information about solution except alpha</p>
- * 
+ * Information about solution except alpha
+ *
  * @author Chih-Chung Chang, Chih-Jen Lin
  */
 public class SolutionInfo

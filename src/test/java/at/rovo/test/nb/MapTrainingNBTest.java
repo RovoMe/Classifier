@@ -33,19 +33,19 @@ public class MapTrainingNBTest extends NormalNaiveBayes<String, String>
 		long catCount = this.trainingData.getNumberOfSamplesForCategory("good");
 		if (LOG.isDebugEnabled())
 			LOG.debug("Category 'good' contained in examples: "+catCount);
-		// 3 sentences are labled as good
+		// 3 sentences are labeled as good
 		Assert.assertEquals("Category 'good' contained in examples ", 3L, catCount);
 		
 		catCount = this.trainingData.getNumberOfSamplesForCategory("bad");
 		if (LOG.isDebugEnabled())
 			LOG.debug("Category 'bad' contained in examples: "+catCount);
-		// 2 sentences are labled as bad
+		// 2 sentences are labeled as bad
 		Assert.assertEquals("Category 'bad' contained in examples ", 2L, catCount);
 		
 		catCount = this.trainingData.getNumberOfSamplesForCategory("notInThere");
 		if (LOG.isDebugEnabled())
 			LOG.debug("Category 'notInThere' contained in examples: "+catCount);
-		// 0 sentences are labled as notInThere
+		// 0 sentences are labeled as notInThere
 		Assert.assertEquals("Category 'notInThere' contained in examples ", 0L, catCount);
 	}
 	
@@ -54,15 +54,15 @@ public class MapTrainingNBTest extends NormalNaiveBayes<String, String>
 	{
 		long featCount = this.trainingData.getFeatureCount("quick", "good");
 		if (LOG.isDebugEnabled())
-			LOG.debug("Feature 'quick' containd in 'good' examples: "+ featCount);
+			LOG.debug("Feature 'quick' contained in 'good' examples: "+ featCount);
 		// 2 sentences labeled as good contain quick
-		Assert.assertEquals("Feature 'quick' containd in 'good' examples ", 2L, featCount);
+		Assert.assertEquals("Feature 'quick' contained in 'good' examples ", 2L, featCount);
 		
 		featCount = this.trainingData.getFeatureCount("quick", "bad");
 		if (LOG.isDebugEnabled())
-			LOG.debug("Feature 'quick' containd in 'bad' examples: "+ featCount);
+			LOG.debug("Feature 'quick' contained in 'bad' examples: "+ featCount);
 		// only 1 sentence labeled as bad contains quick
-		Assert.assertEquals("Feature 'quick' containd in 'bad' examples ", 1L, featCount);
+		Assert.assertEquals("Feature 'quick' contained in 'bad' examples ", 1L, featCount);
 		
 		featCount = this.trainingData.getFeatureCount("notInThere", "good");
 		if (LOG.isDebugEnabled())

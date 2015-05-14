@@ -1,114 +1,117 @@
 package at.rovo.classifier.svm;
 
 /**
- * <p>A support vector machine tries to find a line in a two-dimensional space,
- * a plane in a three-dimensional space or a hyperplane in a n-dimensional space.
- * Separating points in a non-linear space is not trivial. Moreover transforming
- * the data into a higher dimensional space may simplify or even make it possible
- * to perform the separation. This transformation is done by a kernel function.
- * </p>
- * <p>There are actually an infinite number of kernel functions, but in practice
- * only a few are used. </p>
- * 
+ * A support vector machine tries to find a line in a two-dimensional space, a plane in a three-dimensional space or a
+ * hyperplane in a n-dimensional space. Separating points in a non-linear space is not trivial. Moreover transforming
+ * the data into a higher dimensional space may simplify or even make it possible to perform the separation. This
+ * transformation is done by a kernel function.
+ * <p>
+ * There are actually an infinite number of kernel functions, but in practice only a few are used.
+ *
  * @author Roman Vottner
  */
 public enum KernelType
-{	
+{
 	/**
-	 * <p>A linear based kernel method.</p>
-	 * <p>Formula: <code>u'*v</code></p>
+	 * A linear based kernel method.
+	 * <p>
+	 * Formula: <code>u'*v</code>
 	 */
 	LINEAR(0)
-	{
-		public String toString()
-		{
-			return "linear"; 
-		}
-	},
+			{
+				public String toString()
+				{
+					return "linear";
+				}
+			},
 	/**
-	 * <p>A polynomial based kernel method.</p>
-	 * <p>Formula: <code>(gamma*u'*v + coef0)^degree</code></p>
+	 * A polynomial based kernel method.
+	 * <p>
+	 * Formula: <code>(gamma*u'*v + coef0)^degree</code>
 	 */
 	POLYNOMIAL(1)
-	{
-		public String toString()
-		{
-			return "polynomial";
-		}
-	},
+			{
+				public String toString()
+				{
+					return "polynomial";
+				}
+			},
 	/**
-	 * <p>A radial basis function kernel method. This is the recommended method
-	 * for a support vector machine.</p>
-	 * <p>Formula: <code>exp(-gamma*|u-v|^2)</code></p>
+	 * A radial basis function kernel method. This is the recommended method for a support vector machine.
+	 * <p>
+	 * Formula: <code>exp(-gamma*|u-v|^2)</code>
 	 */
 	RBF(2)
-	{
-		public String toString()
-		{
-			return "rbf";
-		}
-	},	
+			{
+				public String toString()
+				{
+					return "rbf";
+				}
+			},
 	/**
-	 * <p>A sigmoid based kernel method.</p>
-	 * <p>Formula: <code>tanh(gamma*u'*v + coef0)</code></p>
+	 * A sigmoid based kernel method.
+	 * <p>
+	 * Formula: <code>tanh(gamma*u'*v + coef0)</code>
 	 */
 	SIGMOID(3)
-	{
-		public String toString()
-		{
-			return "sigmoid";
-		}
-		
-	}, 
+			{
+				public String toString()
+				{
+					return "sigmoid";
+				}
+
+			},
 	/**
-	 * <p>A predefined method for transforming the data into a higher space
-	 * should be provided.</p>
+	 * A predefined method for transforming the data into a higher space should be provided.
 	 */
 	PRECOMPUTED(4)
-	{
-		public String toString()
-		{
-			return "precomputed";
-		}
-	};
-	
+			{
+				public String toString()
+				{
+					return "precomputed";
+				}
+			};
+
 	/** The ordinal index of the corresponding kernel type **/
 	private int value;
-	
+
 	/**
-	 * <p>Initializes the kernel type with an ordinal index</p>
-	 * 
-	 * @param val The ordinal index of the kernel type
+	 * Initializes the kernel type with an ordinal index
+	 *
+	 * @param val
+	 * 		The ordinal index of the kernel type
 	 */
-	private KernelType(int val)
+	KernelType(int val)
 	{
 		this.value = val;
 	}
-	
+
 	/**
-	 * <p>Returns the ordinal index of the kernel type.</p>
-	 * 
+	 * Returns the ordinal index of the kernel type.
+	 *
 	 * @return The ordinal index of the kernel type.
 	 */
 	public int valueOf()
 	{
 		return this.value;
 	}
-	
+
 	/**
-	 * <p>Returns the number of specified kernel types.</p>
-	 * 
-	 * @return
+	 * Returns the number of specified kernel types.
+	 *
+	 * @return The number of specified kernel types, which is 5
 	 */
 	public static int length()
 	{
 		return 5;
 	}
-	
+
 	/**
-	 * <p>Returns the kernel type corresponding to the ordinal index.</p>
-	 * 
-	 * @param i The ordinal index of the kernel type to return
+	 * Returns the kernel type corresponding to the ordinal index.
+	 *
+	 * @param i
+	 * 		The ordinal index of the kernel type to return
+	 *
 	 * @return The kernel type corresponding to the ordinal index
 	 */
 	public static KernelType get(int i)
@@ -129,14 +132,14 @@ public enum KernelType
 				return KernelType.RBF;
 		}
 	}
-	
+
 	/**
-	 * <p>Returns the kernel type corresponding to the name of the kernel or
-	 * the ordinal index as string.</p>
-	 * 
-	 * @param s Either the name of the kernel or the ordinal index as string
-	 * @return The kernel type corresponding to the name or the ordinal index
-	 *         as string
+	 * Returns the kernel type corresponding to the name of the kernel or the ordinal index as string.
+	 *
+	 * @param s
+	 * 		Either the name of the kernel or the ordinal index as string
+	 *
+	 * @return The kernel type corresponding to the name or the ordinal index as string
 	 */
 	public static KernelType get(String s)
 	{

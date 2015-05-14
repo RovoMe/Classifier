@@ -9,9 +9,11 @@ import org.junit.Test;
 import at.rovo.classifier.naiveBayes.NormalNaiveBayes;
 import at.rovo.classifier.naiveBayes.TrainingDataStorageMethod;
 
+import java.lang.invoke.MethodHandles;
+
 public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 {
-	private static Logger LOG = LogManager.getLogger(NormalNaiveBayesTest.class.getName());
+	private static Logger LOG = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 		
 	public NormalNaiveBayesTest()
 	{
@@ -255,7 +257,7 @@ public class NormalNaiveBayesTest extends NormalNaiveBayes<String, String>
 		double prob1 = this.getProbability("good", "quick rabbit".split("\\W"));
 		if (LOG.isDebugEnabled())
 			LOG.debug("P('good'|'quick','rabbit') "+prob1);
-		Assert.assertEquals("P('good'|'quick','rabbit') ", p,prob1, 0.);
+		Assert.assertEquals("P('good'|'quick','rabbit') ", p, prob1, 0.);
 //		
 //		11:16:50 DEBUG NaiveBayes.getCategoryProbability() -    P('bad') = 2/5 = 0.4
 //		11:16:50 DEBUG NaiveBayes.getConditionalProbability() -    P('quick'|'bad') = 1/2 = 0.5
