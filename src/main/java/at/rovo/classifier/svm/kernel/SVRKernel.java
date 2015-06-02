@@ -3,6 +3,7 @@ package at.rovo.classifier.svm.kernel;
 import at.rovo.classifier.svm.Cache;
 import at.rovo.classifier.svm.struct.Parameter;
 import at.rovo.classifier.svm.struct.Problem;
+import at.rovo.classifier.svm.utils.Utils;
 
 public class SVRKernel extends Kernel
 {
@@ -38,27 +39,9 @@ public class SVRKernel extends Kernel
 	@Override
 	public void swapIndex(int i, int j)
 	{
-		do
-		{
-			byte _ = sign[i];
-			sign[i] = sign[j];
-			sign[j] = _;
-		}
-		while (false);
-		do
-		{
-			int _ = index[i];
-			index[i] = index[j];
-			index[j] = _;
-		}
-		while (false);
-		do
-		{
-			double _ = QD[i];
-			QD[i] = QD[j];
-			QD[j] = _;
-		}
-		while (false);
+		Utils.swap(sign, i, j);
+		Utils.swap(index, i, j);
+		Utils.swap(QD, i, j);
 	}
 
 	@Override

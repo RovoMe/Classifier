@@ -9,9 +9,11 @@ import org.junit.Test;
 import at.rovo.classifier.naiveBayes.TrainingDataStorageMethod;
 import at.rovo.classifier.naiveBayes.WeightedNaiveBayes;
 
+import java.lang.invoke.MethodHandles;
+
 public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 {
-	private static Logger logger = LogManager.getLogger(WeightedNaiveBayesTest.class.getName());
+	private static Logger LOG = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 		
 	public WeightedNaiveBayesTest()
 	{
@@ -38,8 +40,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 	{
 		// P(X|C)
 		double wP = this.getConditionalProbability("quick", "good");
-		if (logger.isDebugEnabled())
-			logger.debug("wP('quick'|'good'): "+wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("wP('quick'|'good'): "+wP);
 		// (weight*assumeProb + count*featProb) / (count+weight)
 		// (1*0.5+count*featProb) / (count+1)
 		// 'quick' is in 3 of those 5 example sentences --> count = 3
@@ -49,8 +51,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		Assert.assertEquals("wP('quick'|'good') ", 0.625, wP, 0.);
 		
 		wP = this.getConditionalProbability("quick", "bad");
-		if (logger.isDebugEnabled())
-			logger.debug("wP('quick'|'bad'): "+wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("wP('quick'|'bad'): "+wP);
 		// (weight*assumeProb + count*featProb) / (count+weight)
 		// (1*0.5+count*featProb) / (count+1)
 		// 'quick' is in 3 of those 5 example sentences --> count = 3
@@ -60,8 +62,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		Assert.assertEquals("wP('quick'|'bad') ", 0.5, wP, 0.);
 		
 		wP = this.getConditionalProbability("jumps", "good");
-		if (logger.isDebugEnabled())
-			logger.debug("wP('jumps'|'good'): "+wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("wP('jumps'|'good'): "+wP);
 		// (weight*assumeProb + count*featProb) / (count+weight)
 		// (1*0.5+count*featProb) / (count+1)
 		// 'jumps' is in 2 of those 5 example sentences --> count = 2
@@ -71,8 +73,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		Assert.assertEquals("wP('jumps'|'good') ", 0.611111111, wP, 0.0000001);
 		
 		wP = this.getConditionalProbability("jumps", "bad");
-		if (logger.isDebugEnabled())
-			logger.debug("wP('jumps'|'bad'): "+wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("wP('jumps'|'bad'): "+wP);
 		// (weight*assumeProb + count*featProb) / (count+weight)
 		// (1*0.5+count*featProb) / (count+1)
 		// 'quick' is in 3 of those 5 example sentences --> count = 3
@@ -82,8 +84,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		Assert.assertEquals("wP('jumps'|'bad') ", 1./6, wP, 0.);
 		
 		wP = this.getConditionalProbability("notInThere", "good");
-		if (logger.isDebugEnabled())
-			logger.debug("wP('notInThere'|'good'): "+wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("wP('notInThere'|'good'): "+wP);
 		// (weight*assumeProb + count*featProb) / (count+weight)
 		// (1*0.5+count*featProb) / (count+1)
 		// 'notInThere' is in 0 of those 5 example sentences --> count = 0
@@ -93,8 +95,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		Assert.assertEquals("wP('notInThere'|'good') ", 0.5, wP, 0.);
 		
 		wP = this.getConditionalProbability("quick", "notExisting");
-		if (logger.isDebugEnabled())
-			logger.debug("wP('quick'|'notExisting'): "+wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("wP('quick'|'notExisting'): "+wP);
 		// (weight*assumeProb + count*featProb) / (count+weight)
 		// (1*0.5+count*featProb) / (count+1)
 		// 'quick' is in 3 of those 5 example sentences --> count = 3
@@ -104,8 +106,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		Assert.assertEquals("wP('quick'|'notExisting') ", 0.125, wP, 0.);
 		
 		wP = this.getConditionalProbability("money", "good");
-		if (logger.isDebugEnabled())
-			logger.debug("wP('money'|'good'): " + wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("wP('money'|'good'): " + wP);
 		// (weight*assumeProb + count*featProb) / (count+weight)
 		// (1*0.5+count*featProb) / (count+1)
 		// money is only in 1 of those 5 example sentences --> count = 1
@@ -116,8 +118,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		
 		this.sampleTrain();
 		wP = this.getConditionalProbability("money", "good");
-		if (logger.isDebugEnabled())
-			logger.debug("Weighted probability for 'money' in 'good' examples after further sample training: " +wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("Weighted probability for 'money' in 'good' examples after further sample training: " +wP);
 		// After train of the same samples again - we have now
 		// * 10 sentences - 6 labeled as good, 4 as bad
 		// * 2 sentences contain money - 0 labeled as good, 2 as bad
@@ -136,8 +138,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 	{
 		// P(X,Y|C)
 		double wP = this.getConditionalProbability("quick money".split("\\W"), "good");
-		if (logger.isDebugEnabled())
-			logger.debug("wP('quick','money'|'good'): "+wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("wP('quick','money'|'good'): "+wP);
 		// (weight*assumeProb + count*featProb) / (count+weight)
 		// (1*0.5+count*featProb) / (count+1)
 		// 'quick' is in 3 of those 5 example sentences --> count = 3
@@ -150,8 +152,8 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		Assert.assertEquals("wP('quick','money'|'good') ", 0.15625, wP, 0.);
 		
 		wP = this.getConditionalProbability("quick money".split("\\W"), "bad");
-		if (logger.isDebugEnabled())
-			logger.debug("wP('quick','money'|'bad'): "+wP);
+		if (LOG.isDebugEnabled())
+			LOG.debug("wP('quick','money'|'bad'): "+wP);
 		// (weight*assumeProb + count*featProb) / (count+weight)
 		// (1*0.5+count*featProb) / (count+1)
 		// 'quick' is in 3 of those 5 example sentences --> count = 3
@@ -169,20 +171,20 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 	{
 		// P(C)
 		double catProb = this.getCategoryProbability("good");
-		if (logger.isDebugEnabled())
-			logger.debug("Probability of category 'good': "+catProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("Probability of category 'good': "+catProb);
 		// category count / total count
 		Assert.assertEquals("Probability of category 'good' ", new Double(3./5.), new Double(catProb));
 		
 		catProb = this.getCategoryProbability("bad");
-		if (logger.isDebugEnabled())
-			logger.debug("Probability of category 'good': "+catProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("Probability of category 'good': "+catProb);
 		// category count / total count
 		Assert.assertEquals("Probability of category 'good' ", new Double(2./5.), new Double(catProb));
 		
 		catProb = this.getCategoryProbability("notInThere");
-		if (logger.isDebugEnabled())
-			logger.debug("Probability of category 'good': "+catProb);
+		if (LOG.isDebugEnabled())
+			LOG.debug("Probability of category 'good': "+catProb);
 		// category count / total count
 		Assert.assertEquals("Probability of category 'good' ", new Double(0), new Double(catProb));
 	}
@@ -202,14 +204,14 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		//
 		// (0.5*0.6) / (0.5*0.6 + 0.5*0.4) = 0.6 
 		double p = this.getProbability("good", "notInThere");
-		if (logger.isDebugEnabled())
-			logger.debug("nb-wP('good'|'notInThere'): "+p);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-wP('good'|'notInThere'): "+p);
 		Assert.assertEquals("nb-wP('good'|'notInThere') ", 0.6, p, 0.);
 		
 		// (0.5*0.4) / (0.5*0.6 + =.5*0.4) = 0.4
 		double p2 = this.getProbability("bad", "notInThere");
-		if (logger.isDebugEnabled())
-			logger.debug("nb-wP('notInThere'|'bad'): "+p2);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-wP('notInThere'|'bad'): "+p2);
 		Assert.assertEquals("nb-wP('notInThere'|'bad') ", 0.4, p2, 0.);
 		Assert.assertEquals("nb-wP('good'|'notInThere')+nb-wP('notInThere'|'bad') ", 1., p+p2, 0.);
 		
@@ -232,14 +234,14 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 		// (0.5*0.5*0.6) / (0.5*0.5*0.6 + 0.5*0.5*0.4) = 0.6
 		String[] notInThere = new String[] { "notInThere", "notInThereToo" };
 		double p4 = this.getProbability("good", notInThere);
-		if (logger.isDebugEnabled())
-			logger.debug("nb-wP('good'|'notInThere','notInThereToo'): "+p4);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-wP('good'|'notInThere','notInThereToo'): "+p4);
 		Assert.assertEquals("nb-wP('good'|'notInThere','notInThereToo') ", p, p4, 0.);
 		
 		// (0.5*0.5*0.4) / (0.5*0.5*0.6 + 0.5*0.5*0.4) = 0.4
 		double p5 = this.getProbability("bad", notInThere);
-		if (logger.isDebugEnabled())
-			logger.debug("nb-wP('bad'|'notInThere','notInThereToo'): "+p5);
+		if (LOG.isDebugEnabled())
+			LOG.debug("nb-wP('bad'|'notInThere','notInThereToo'): "+p5);
 		Assert.assertEquals("nb-wP('bad'|'notInThere','notInThereToo') ", p2, p5, 0.);
 		Assert.assertEquals("nb-wP('good'|'notInThere','notInThereToo')+nb-wP('bad'|'notInThere','notInThereToo') ", 1.,(p4+p5), 0.);
 	}
@@ -248,32 +250,32 @@ public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 	public void testClassification()
 	{
 		String category = this.classify("quick rabbit".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick rabbit' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick rabbit' as: "+category);
 		Assert.assertEquals("classify 'quick rabbit' as ", "good", category);
 		
 		category = this.classify("quick money".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick money' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick money' as: "+category);
 		Assert.assertEquals("classify 'quick money' as ", "bad", category);
 		
-		if (logger.isDebugEnabled())
-			logger.debug("Setting Threshold to 3.0");
+		if (LOG.isDebugEnabled())
+			LOG.debug("Setting Threshold to 3.0");
 		this.setThreshold("bad", 3.0f);
 		
 		category = this.classify("quick money".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick money' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick money' as: "+category);
 		Assert.assertNull("classify 'quick money' as ", category);
 		
-		if (logger.isDebugEnabled())
-			logger.debug("Train sample data 10 times");
+		if (LOG.isDebugEnabled())
+			LOG.debug("Train sample data 10 times");
 		for (int i=0; i<10; i++)
 			this.sampleTrain();
 		
 		category = this.classify("quick money".split("\\W"));
-		if (logger.isDebugEnabled())
-			logger.debug("classify 'quick money' as: "+category);
+		if (LOG.isDebugEnabled())
+			LOG.debug("classify 'quick money' as: "+category);
 		Assert.assertEquals("classify 'quick money' as ", "bad", category);
 	}
 }

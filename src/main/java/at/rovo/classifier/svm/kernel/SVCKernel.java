@@ -3,7 +3,7 @@ package at.rovo.classifier.svm.kernel;
 import at.rovo.classifier.svm.Cache;
 import at.rovo.classifier.svm.struct.Parameter;
 import at.rovo.classifier.svm.struct.Problem;
-
+import at.rovo.classifier.svm.utils.Utils;
 
 
 //
@@ -18,7 +18,7 @@ public class SVCKernel extends Kernel
 	public SVCKernel(Problem prob, Parameter param, byte[] y_)
 	{
 		super(prob.numInstances, prob.x, param);
-		this.y = (byte[]) y_.clone();
+		this.y = y_.clone();
 		this.cache = new Cache(prob.numInstances, (long) (param.cache_size * (1 << 20)));
 		this.QD = new double[prob.numInstances];
 		for (int i = 0; i < prob.numInstances; i++)
@@ -49,19 +49,7 @@ public class SVCKernel extends Kernel
 	{
 		this.cache.swapIndex(i, j);
 		super.swapIndex(i, j);
-		do
-		{
-			byte _ = this.y[i];
-			this.y[i] = this.y[j];
-			this.y[j] = _;
-		}
-		while (false);
-		do
-		{
-			double _ = this.QD[i];
-			this.QD[i] = this.QD[j];
-			this.QD[j] = _;
-		}
-		while (false);
+		Utils.swap(y, i, j);
+		Utils.swap(QD, i, j);
 	}
 }

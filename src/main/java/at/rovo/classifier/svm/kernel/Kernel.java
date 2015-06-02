@@ -6,10 +6,10 @@ import at.rovo.classifier.svm.KernelType;
 import at.rovo.classifier.svm.struct.Node;
 import at.rovo.classifier.svm.struct.Parameter;
 import at.rovo.classifier.svm.struct.QMatrix;
+import at.rovo.classifier.svm.utils.Utils;
 
 /**
- * <p></p>
- * 
+ *
  * @author Chih-Chung Chang, Chih-Jen Lin
  */
 public abstract class Kernel extends QMatrix
@@ -31,17 +31,13 @@ public abstract class Kernel extends QMatrix
 	{
 		do
 		{
-			Node[] _ = x.get(i);
-			x.set(i, x.get(j));
-			x.set(j, _);
+			Utils.swap(x, i, j);
 		}
 		while (false);
 		if (x_square != null)
 			do
 			{
-				double _ = x_square[i];
-				x_square[i] = x_square[j];
-				x_square[j] = _;
+				Utils.swap(x_square, i, j);
 			}
 			while (false);
 	}
@@ -99,9 +95,8 @@ public abstract class Kernel extends QMatrix
 	
 	private List<Node[]> clone(List<Node[]> list)
 	{
-		List<Node[]> copy = new ArrayList<Node[]>(list.size());
-		for (Node[] node : list)
-			copy.add((Node[])node.clone());
+		List<Node[]> copy = new ArrayList<>(list.size());
+		list.forEach(node -> copy.add(node.clone()));
 		return copy;
 	}
 
