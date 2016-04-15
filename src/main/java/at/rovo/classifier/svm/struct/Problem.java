@@ -2,7 +2,6 @@ package at.rovo.classifier.svm.struct;
 
 import at.rovo.classifier.TrainingData;
 import at.rovo.classifier.svm.KernelType;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,140 +19,140 @@ import java.util.StringTokenizer;
  */
 public class Problem implements Serializable, TrainingData<Number, Node[][]>
 {
-	/** Unique identifier necessary for serialization **/
-	private static final long serialVersionUID = 7396001955832580392L;
-	/** The number of instances trained **/
-	public int numInstances;
-	/** Contains the labels or classifications **/
-	public List<Double> y;
-	/** Contains the set of features the model should be trained with **/
-	public List<Node[]> x;
-	/** **/
-	private int maxIndex;
+    /** Unique identifier necessary for serialization **/
+    private static final long serialVersionUID = 7396001955832580392L;
+    /** The number of instances trained **/
+    public int numInstances;
+    /** Contains the labels or classifications **/
+    public List<Double> y;
+    /** Contains the set of features the model should be trained with **/
+    public List<Node[]> x;
+    /** **/
+    private int maxIndex;
 
-	public Problem()
-	{
-		x = new ArrayList<>();
-		y = new ArrayList<>();
-	}
+    public Problem()
+    {
+        x = new ArrayList<>();
+        y = new ArrayList<>();
+    }
 
-	public void add(Double label, Node[] features)
-	{
-		this.x.add(features);
-		this.y.add(label);
-		this.numInstances++;
+    public void add(Double label, Node[] features)
+    {
+        this.x.add(features);
+        this.y.add(label);
+        this.numInstances++;
 
-		this.maxIndex = Math.max(maxIndex, features[features.length - 1].index);
-	}
+        this.maxIndex = Math.max(maxIndex, features[features.length - 1].index);
+    }
 
-	public int getMaxIndex()
-	{
-		return this.maxIndex;
-	}
+    public int getMaxIndex()
+    {
+        return this.maxIndex;
+    }
 
-	/**
-	 * Creates a problem statement from the data provided as test data.
-	 * <p>
-	 * Therefore the test data is parsed. The first entry in every line is the actual classification result. A value of
-	 * 1 indicates a positive classification while a value of -1 indicates a negative one.
-	 * <p>
-	 * The remaining entries in the line are pairs of index:value, where index may represent the index of a word inside
-	 * a word-vector while a value of 1 indicates its positive occurrence in the document. By default a value of 0 is
-	 * taken for features not mentioned yet to reduce the necessity to provide every single feature.
-	 *
-	 * @param param
-	 * 		The parameters provided to the application
-	 *
-	 * @return The parsed test data converted to a Problem instance to train the classifier
-	 *
-	 * @throws IOException
-	 * 		If the training file cannot be read
-	 */
-	public static Problem create(String inputFileName, Parameter param) throws IOException
-	{
-		BufferedReader fp = new BufferedReader(new FileReader(inputFileName));
-		List<Double> y = new ArrayList<>(); // will hold the classification
-		List<Node[]> x = new ArrayList<>(); // will hold the features
-		int maxIndex = 0;
+    /**
+     * Creates a problem statement from the data provided as test data.
+     * <p>
+     * Therefore the test data is parsed. The first entry in every line is the actual classification result. A value of
+     * 1 indicates a positive classification while a value of -1 indicates a negative one.
+     * <p>
+     * The remaining entries in the line are pairs of index:value, where index may represent the index of a word inside
+     * a word-vector while a value of 1 indicates its positive occurrence in the document. By default a value of 0 is
+     * taken for features not mentioned yet to reduce the necessity to provide every single feature.
+     *
+     * @param param
+     *         The parameters provided to the application
+     *
+     * @return The parsed test data converted to a Problem instance to train the classifier
+     *
+     * @throws IOException
+     *         If the training file cannot be read
+     */
+    public static Problem create(String inputFileName, Parameter param) throws IOException
+    {
+        BufferedReader fp = new BufferedReader(new FileReader(inputFileName));
+        List<Double> y = new ArrayList<>(); // will hold the classification
+        List<Node[]> x = new ArrayList<>(); // will hold the features
+        int maxIndex = 0;
 
-		// read the test data from the file
-		while (true)
-		{
-			String line = fp.readLine();
-			if (line == null)
-			{
-				break;
-			}
+        // read the test data from the file
+        while (true)
+        {
+            String line = fp.readLine();
+            if (line == null)
+            {
+                break;
+            }
 
-			StringTokenizer st = new StringTokenizer(line, " \t\n\r\f:");
+            StringTokenizer st = new StringTokenizer(line, " \t\n\r\f:");
 
-			// first entry in the line is always the classification
-			y.add(Double.parseDouble(st.nextToken()));
-			// run through the rest of the tokens and create a new feature for
-			// every pair of index:value
-			// index could be the index of a word inside a word-vector, while a
-			// value of 1 may indicate that this feature is available
-			int m = st.countTokens() / 2;
-			Node[] node = new Node[m];
-			for (int j = 0; j < m; j++)
-			{
-				node[j] = new Node();
-				node[j].index = Integer.parseInt(st.nextToken());
-				node[j].value = Double.parseDouble(st.nextToken());
-			}
-			if (m > 0)
-			{
-				maxIndex = Math.max(maxIndex, node[m - 1].index);
-			}
-			x.add(node);
-		}
-		fp.close();
+            // first entry in the line is always the classification
+            y.add(Double.parseDouble(st.nextToken()));
+            // run through the rest of the tokens and create a new feature for
+            // every pair of index:value
+            // index could be the index of a word inside a word-vector, while a
+            // value of 1 may indicate that this feature is available
+            int m = st.countTokens() / 2;
+            Node[] node = new Node[m];
+            for (int j = 0; j < m; j++)
+            {
+                node[j] = new Node();
+                node[j].index = Integer.parseInt(st.nextToken());
+                node[j].value = Double.parseDouble(st.nextToken());
+            }
+            if (m > 0)
+            {
+                maxIndex = Math.max(maxIndex, node[m - 1].index);
+            }
+            x.add(node);
+        }
+        fp.close();
 
-		// Create a problem instance and assign the parsed and converted data
-		// to the problem instance
-		Problem prob = new Problem();
-		prob.numInstances = y.size();
-		prob.x = x;
-		prob.y = y;
+        // Create a problem instance and assign the parsed and converted data
+        // to the problem instance
+        Problem prob = new Problem();
+        prob.numInstances = y.size();
+        prob.x = x;
+        prob.y = y;
 
-		// normalizes the radius used for RBF f.e.
-		if (param.gamma == 0 && maxIndex > 0)
-		{
-			param.gamma = 1.0 / maxIndex;
-		}
+        // normalizes the radius used for RBF f.e.
+        if (param.gamma == 0 && maxIndex > 0)
+        {
+            param.gamma = 1.0 / maxIndex;
+        }
 
-		// check if the format for a pre-computed kernel type is appropriate
-		if (KernelType.PRECOMPUTED.equals(param.kernelType))
-		{
-			for (int i = 0; i < prob.numInstances; i++)
-			{
-				if (prob.x.get(i)[0].index != 0)
-				{
-					System.err.print("Wrong kernel matrix: first column must be 0:sample_serial_number\n");
-					System.exit(1);
-				}
-				if ((int) prob.x.get(i)[0].value <= 0 || (int) prob.x.get(i)[0].value > maxIndex)
-				{
-					System.err.print("Wrong input format: sample_serial_number out of range\n");
-					System.exit(1);
-				}
-			}
-		}
+        // check if the format for a pre-computed kernel type is appropriate
+        if (KernelType.PRECOMPUTED.equals(param.kernelType))
+        {
+            for (int i = 0; i < prob.numInstances; i++)
+            {
+                if (prob.x.get(i)[0].index != 0)
+                {
+                    System.err.print("Wrong kernel matrix: first column must be 0:sample_serial_number\n");
+                    System.exit(1);
+                }
+                if ((int) prob.x.get(i)[0].value <= 0 || (int) prob.x.get(i)[0].value > maxIndex)
+                {
+                    System.err.print("Wrong input format: sample_serial_number out of range\n");
+                    System.exit(1);
+                }
+            }
+        }
 
-		return prob;
-	}
+        return prob;
+    }
 
-	@Override
-	public void saveData(File directory, String name)
-	{
-		// TODO Auto-generated method stub
+    @Override
+    public void saveData(File directory, String name)
+    {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public boolean loadData(File serializedObject)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean loadData(File serializedObject)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

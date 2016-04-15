@@ -6,5 +6,5 @@ import at.rovo.classifier.svm.struct.SolutionInfo;
 
 public abstract class SolveInstance
 {
-	public abstract void solve(Problem prob, Parameter param, double[] alpha, SolutionInfo si);
+    public abstract void solve(Problem prob, Parameter param, double[] alpha, SolutionInfo si);
 }
