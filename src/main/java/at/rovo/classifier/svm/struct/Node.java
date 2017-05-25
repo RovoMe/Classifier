@@ -8,10 +8,10 @@ package at.rovo.classifier.svm.struct;
  */
 public class Node implements java.io.Serializable
 {
-	/** Unique identifier necessary for serialization **/
-	private static final long serialVersionUID = -9130518857022242321L;
-	/** The index of a feature inside a word-vector f.e. **/
-	public int index;
-	/** The weight or scale of a certain feature **/
-	public double value;
+    /** Unique identifier necessary for serialization **/
+    private static final long serialVersionUID = -9130518857022242321L;
+    /** The index of a feature inside a word-vector f.e. **/
+    public int index;
+    /** The weight or scale of a certain feature **/
+    public double value;
 }

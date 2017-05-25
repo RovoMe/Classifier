@@ -9,9 +9,9 @@ package at.rovo.classifier.svm.struct;
 //
 public abstract class QMatrix
 {
-	public abstract float[] get_Q(int column, int len);
+    public abstract float[] get_Q(int column, int len);
 
-	public abstract double[] get_QD();
+    public abstract double[] get_QD();
 
-	public abstract void swapIndex(int i, int j);
+    public abstract void swapIndex(int i, int j);
 };

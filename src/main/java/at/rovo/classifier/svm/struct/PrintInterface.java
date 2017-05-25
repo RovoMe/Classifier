@@ -2,5 +2,5 @@ package at.rovo.classifier.svm.struct;
 
 public interface PrintInterface
 {
-	public void print(String s);
+    void print(String s);
 }

@@ -2,18 +2,18 @@ package at.rovo.test.nb;
 
 import org.junit.Assert;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import at.rovo.classifier.naiveBayes.TrainingDataStorageMethod;
 import at.rovo.classifier.naiveBayes.WeightedNaiveBayes;
 
 import java.lang.invoke.MethodHandles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WeightedNaiveBayesTest extends WeightedNaiveBayes<String,String>
 {
-	private static Logger LOG = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+	private static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 		
 	public WeightedNaiveBayesTest()
 	{

@@ -5,6 +5,6 @@ package at.rovo.classifier.svm.struct;
 //
 public class DecisionFunction
 {
-	public double[] alpha;
-	public double rho;
+    public double[] alpha;
+    public double rho;
 }

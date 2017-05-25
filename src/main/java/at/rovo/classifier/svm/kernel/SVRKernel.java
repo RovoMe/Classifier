@@ -7,66 +7,70 @@ import at.rovo.classifier.svm.utils.Utils;
 
 public class SVRKernel extends Kernel
 {
-	private final int l;
-	private final Cache cache;
-	private final byte[] sign;
-	private final int[] index;
-	private int next_buffer;
-	private float[][] buffer;
-	private final double[] QD;
+    private final int l;
+    private final Cache cache;
+    private final byte[] sign;
+    private final int[] index;
+    private int next_buffer;
+    private float[][] buffer;
+    private final double[] QD;
 
-	public SVRKernel(Problem prob, Parameter param)
-	{
-		super(prob.numInstances, prob.x, param);
-		l = prob.numInstances;
-		cache = new Cache(l, (long) (param.cache_size * (1 << 20)));
-		QD = new double[2 * l];
-		sign = new byte[2 * l];
-		index = new int[2 * l];
-		for (int k = 0; k < l; k++)
-		{
-			sign[k] = 1;
-			sign[k + l] = -1;
-			index[k] = k;
-			index[k + l] = k;
-			QD[k] = function(k, k);
-			QD[k + l] = QD[k];
-		}
-		buffer = new float[2][2 * l];
-		next_buffer = 0;
-	}
+    public SVRKernel(Problem prob, Parameter param)
+    {
+        super(prob.numInstances, prob.x, param);
+        l = prob.numInstances;
+        cache = new Cache(l, (long) (param.cache_size * (1 << 20)));
+        QD = new double[2 * l];
+        sign = new byte[2 * l];
+        index = new int[2 * l];
+        for (int k = 0; k < l; k++)
+        {
+            sign[k] = 1;
+            sign[k + l] = -1;
+            index[k] = k;
+            index[k + l] = k;
+            QD[k] = function(k, k);
+            QD[k + l] = QD[k];
+        }
+        buffer = new float[2][2 * l];
+        next_buffer = 0;
+    }
 
-	@Override
-	public void swapIndex(int i, int j)
-	{
-		Utils.swap(sign, i, j);
-		Utils.swap(index, i, j);
-		Utils.swap(QD, i, j);
-	}
+    @Override
+    public void swapIndex(int i, int j)
+    {
+        Utils.swap(sign, i, j);
+        Utils.swap(index, i, j);
+        Utils.swap(QD, i, j);
+    }
 
-	@Override
-	public float[] get_Q(int i, int len)
-	{
-		float[][] data = new float[1][];
-		int j, real_i = index[i];
-		if (cache.getData(real_i, data, l) < l)
-		{
-			for (j = 0; j < l; j++)
-				data[0][j] = (float) function(real_i, j);
-		}
+    @Override
+    public float[] get_Q(int i, int len)
+    {
+        float[][] data = new float[1][];
+        int j, real_i = index[i];
+        if (cache.getData(real_i, data, l) < l)
+        {
+            for (j = 0; j < l; j++)
+            {
+                data[0][j] = (float) function(real_i, j);
+            }
+        }
 
-		// reorder and copy
-		float buf[] = buffer[next_buffer];
-		next_buffer = 1 - next_buffer;
-		byte si = sign[i];
-		for (j = 0; j < len; j++)
-			buf[j] = (float) si * sign[j] * data[0][index[j]];
-		return buf;
-	}
+        // reorder and copy
+        float buf[] = buffer[next_buffer];
+        next_buffer = 1 - next_buffer;
+        byte si = sign[i];
+        for (j = 0; j < len; j++)
+        {
+            buf[j] = (float) si * sign[j] * data[0][index[j]];
+        }
+        return buf;
+    }
 
-	@Override
-	public double[] get_QD()
-	{
-		return QD;
-	}
+    @Override
+    public double[] get_QD()
+    {
+        return QD;
+    }
 }
